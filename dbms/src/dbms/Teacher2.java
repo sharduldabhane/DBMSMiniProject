@@ -7,6 +7,7 @@ package dbms;
 import java.sql.*;
 import java.sql.DriverManager;
 import java.lang.*;
+import java.sql.PreparedStatement;
 import java.util.*;
 import java.util.concurrent.*;
 import java.net.*;
@@ -304,7 +305,7 @@ int id;
 	            String d= date.getSelectedItem().toString();
 	            System.out.println(d);
 	        	PreparedStatement ps1 = co.prepareStatement(sql2);
-	        	Statement stmt=co.createStatement();
+	        	PreparedStatement stmt=co.prepareStatement("select count(*) from Biometric_attendence where rollNO="+"'"+rno+"'"+" AND month="+"?"+";");
 	        	ResultSet rs2;
 	            ResultSet rs1 = ps1.executeQuery();
 	            
@@ -317,7 +318,8 @@ int id;
 	            {
 	            	System.out.println("h1");
 	                rno=rs1.getInt("rollno");
-	                rs2=stmt.executeQuery("select count(*) from Biometric_attendence where rollNO="+"'"+rno+"'"+" AND month="+"'"+d+"';");
+	                stmt.setString(1, d);
+	                rs2=stmt.execute();
 	                rs2.next();
 	                 n=rs2.getInt(1);
 	                System.out.println(n);
