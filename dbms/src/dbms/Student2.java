@@ -9,6 +9,7 @@ package dbms;
  * @author Amulya
  */
 
+import java.sql.PreparedStatement;
 import javax.swing.JFrame;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -42,7 +43,7 @@ public class Student2 extends javax.swing.JFrame  implements ActionListener {
 		String days="";
         try
         {
-        Statement stmt=co.createStatement();
+        PreparedStatement stmt=co.prepareStatement("select start_time ,end_time from timeTable where rollno= '"+id+"' and day=?;");
        
         Calendar cal = Calendar.getInstance();
         int val = cal.get(Calendar.DAY_OF_WEEK);
@@ -85,11 +86,12 @@ public class Student2 extends javax.swing.JFrame  implements ActionListener {
 	      {
 	       	if(rs2.getString("day").equals(days)) 
 	       	{
-	       	    ResultSet rs=stmt.executeQuery("select start_time ,end_time from timeTable where rollno=" + " '"+id+"' and day="+"'"+days+"';" );
-	       	    rs.next();
-	       	   int c= rs.getString("start_time").compareTo(timer);
-	       	   int d=rs.getString("end_time").compareTo(timer);
-		       	if( c<d ) 
+	       	    stmt.setString(1, days);
+		      	    ResultSet rs=stmt.execute( );
+		      	    rs.next();
+		      	    int c= rs.getString("start_time").compareTo(timer);
+		      	    int d=rs.getString("end_time").compareTo(timer);
+		      	    if( c<d ) 
 		       	{	
 		       	ResultSet r=stmt.executeQuery("select start_time ,end_time,lab_no,professor_name from timeTable where rollno=" + " '"+id+"' and day="+"'"+days+"';");	
 		       	r.next();
@@ -101,8 +103,8 @@ public class Student2 extends javax.swing.JFrame  implements ActionListener {
 		        stmt.executeUpdate("insert into TAA(rollNO,TDate,start_time,end_time,Lab_no,professor_name,Attendance)"+  "values( '"+id+"','"+dates+"','"+str+"','"+stre+"','"+strl+"','"+strp+"','P'); ");
 		        return 0;
 		       	}
-		   
-		        break;
+		      	    break;
+
 	       	}
 	      }//while
         
