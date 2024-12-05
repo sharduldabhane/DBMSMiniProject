@@ -7,6 +7,7 @@ package dbms;
 import java.sql.*;
 import java.sql.DriverManager;
 import java.lang.*;
+import java.sql.PreparedStatement;
 import java.util.*;
 import java.util.concurrent.*;
 import java.net.*;
@@ -292,7 +293,7 @@ int id;
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
-    	int rno=0,rowno=0;int n;
+int n;
     	
        TableModel tm=jTable1.getModel();
     	boolean check=false;
@@ -304,7 +305,7 @@ int id;
 	            String d= date.getSelectedItem().toString();
 	            System.out.println(d);
 	        	PreparedStatement ps1 = co.prepareStatement(sql2);
-	        	Statement stmt=co.createStatement();
+	        	PreparedStatement stmt=co.prepareStatement("select count(*) from Biometric_attendence where rollNO='"+rno+"' AND month=?;");
 	        	ResultSet rs2;
 	            ResultSet rs1 = ps1.executeQuery();
 	            
@@ -317,17 +318,19 @@ int id;
 	            {
 	            	System.out.println("h1");
 	                rno=rs1.getInt("rollno");
-	                rs2=stmt.executeQuery("select count(*) from Biometric_attendence where rollNO="+"'"+rno+"'"+" AND month="+"'"+d+"';");
-	                rs2.next();
-	                 n=rs2.getInt(1);
+	                stmt.setString(1, date.getSelectedItem().toString());
+	                rs2=stmt.execute();
+	                 rs2.next();
+	                n=rs2.getInt(1);
 	                System.out.println(n);
-	                System.out.println("h2");
 
-	            check=(boolean) tm.getValueAt(i, 2);
+	            System.out.println("h2");
 	                
 	               
 	                
-	                if(n>0)
+	                check=(boolean) tm.getValueAt(i, 2);
+	                
+	                	if(n>0)
 	                {
 	                	System.out.println("h3");
 	                 
@@ -360,9 +363,8 @@ int id;
 	                	}
 	                	//month is new
 	                }
-	                
 	                	i++;
-	               
+
 	                
 	                
 	            }
